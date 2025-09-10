@@ -47,8 +47,6 @@
 #define SEG_ON   GPIO_PIN_RESET
 #define SEG_OFF  GPIO_PIN_SET
 
-// Bit order: a b c d e f g  (bit0 -> a, bit1 -> b, ... bit6 -> g)
-// 1 = segment lit (logical), we’ll convert to active-low when writing.
 static const uint8_t segmap[10] = {
   0b1111110, // 0: a b c d e f on
   0b0110000, // 1: b c
