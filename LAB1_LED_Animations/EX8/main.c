@@ -55,18 +55,13 @@ void setNumberOnClock(int num) {
   if (num < 0) num = 0;
   num %= 12;
 
-  // turn everything OFF first
-  clearAllClock();
-
-  // map index -> pin
   const uint16_t pins[12] = {
     LED0_Pin, LED1_Pin, LED2_Pin, LED3_Pin,
     LED4_Pin, LED5_Pin, LED6_Pin, LED7_Pin,
     LED8_Pin, LED9_Pin, LED10_Pin, LED11_Pin
   };
 
-  // turn selected LED ON
-  HAL_GPIO_WritePin(GPIOA, pins[num], GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, pins[num], GPIO_PIN_RESET); // active-low: ON
 }
 
 /* USER CODE END PV */
