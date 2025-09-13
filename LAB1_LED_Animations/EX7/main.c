@@ -99,11 +99,20 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int n = 0;
   while (1) {
-    setNumberOnClock(n);
-    HAL_Delay(300);
-    n = (n + 1) % 12;
+    // Turn ALL LEDs ON (active-low: RESET = ON)
+    HAL_GPIO_WritePin(GPIOA,
+        LED0_Pin|LED1_Pin|LED2_Pin|LED3_Pin|
+        LED4_Pin|LED5_Pin|LED6_Pin|LED7_Pin|
+        LED8_Pin|LED9_Pin|LED10_Pin|LED11_Pin,
+        GPIO_PIN_RESET);
+
+    HAL_Delay(1000);   // keep them ON for 1s
+
+    // Now clear them all
+    clearAllClock();
+
+    HAL_Delay(1000);   // keep them OFF for 1s
   }
   /* USER CODE END 3 */
 }
