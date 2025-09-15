@@ -133,8 +133,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
 
-  // ----- choose a start time (24h format). Change these if you want. -----
-  int hr = 12;   // 0..23
+  // ----- choose a start time (24h format). -----
+  int hr = 0;   // 0..23
   int min = 0;   // 0..59
   int sec = 0;   // 0..59
 
@@ -143,10 +143,10 @@ int main(void)
     // Map to LED indices (0..11)
     // - Second hand: one step per 5 seconds
     // - Minute hand: one step per 5 minutes
-    // - Hour hand: basic hour position (0..11). (Simple version; no minute offset.)
+    // - Hour hand: basic hour position (0..11).
     int s_idx = idx12(sec / 5);       // 0..11
     int m_idx = idx12(min / 5);       // 0..11
-    int h_idx = idx12( (hr % 12) + (min >= 30 ? 1 : 0) );       // 0..11
+    int h_idx = hr;       // 0..11
 
     // Show all three hands at once
     clearAllClock();
