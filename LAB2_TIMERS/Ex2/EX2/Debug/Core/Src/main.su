@@ -1,0 +1,14 @@
+main.c:66:20:write_segments	16	static
+main.c:77:6:display7SEG	16	static
+main.c:100:20:enable_EN0	8	static
+main.c:106:20:enable_EN1	8	static
+main.c:112:20:enable_EN2	8	static
+main.c:118:20:enable_EN3	8	static
+main.c:124:20:disable_all_digits	8	static
+main.c:131:20:drive_digit	16	static
+main.c:157:5:main	8	static
+main.c:201:6:SystemClock_Config	72	static
+main.c:237:13:MX_TIM2_Init	32	static
+main.c:282:13:MX_GPIO_Init	32	static
+main.c:319:6:HAL_TIM_PeriodElapsedCallback	16	static
+main.c:341:6:Error_Handler	4	static,ignoring_inline_asm
