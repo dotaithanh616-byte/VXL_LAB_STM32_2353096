@@ -73,7 +73,6 @@ static inline void write_segments(uint8_t m) {
   HAL_GPIO_WritePin(SEG0_GPIO_Port, SEG0_Pin, (m & (1<<6)) ? SEG_ON : SEG_OFF); // g
 }
 
-// ===== display one digit =====
 void display7SEG(int num) {
   if (num < 0 || num > 9) num = 0;
   write_segments(segmap[num]);
@@ -108,9 +107,8 @@ static inline void disable_both(void){
   HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, GPIO_PIN_SET);
 }
 
-// Show the left digit = '1', right digit = '2'
 static inline void show_left_digit(void){
-  display7SEG(1);   // drives PB0..PB6 (SEG0..SEG6) active-LOW for CA
+  display7SEG(1);
   enable_EN0();
 }
 static inline void show_right_digit(void){
@@ -284,23 +282,21 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
   if (htim->Instance == TIM2){
-    // Blink PA5 (LED_RED) every 1s
-    if (++cnt_1s >= 100){       // 100 * 10ms = 1000ms
+    if (++cnt_1s >= 100){
       cnt_1s = 0;
       HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
     }
 
-    // Alternate which digit is on every 500ms
-    if (++cnt_500ms >= 50){     // 50 * 10ms = 500ms
+    if (++cnt_500ms >= 50){
       cnt_500ms = 0;
       which_digit ^= 1;
     }
 
-    // Drive the current digit
+
     if (which_digit == 0) {
-      show_left_digit();        // EN0: show '1'
+      show_left_digit();
     } else {
-      show_right_digit();       // EN1: show '2'
+      show_right_digit();
     }
   }
 }
