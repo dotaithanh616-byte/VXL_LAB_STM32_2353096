@@ -63,7 +63,7 @@ static const uint8_t segmap[10] = {
 #define ENM_ON   GPIO_PIN_RESET  // active-low enable
 #define ENM_OFF  GPIO_PIN_SET
 
-static inline uint8_t remap_rows(uint8_t v){ return v; }     // bit0 = top row (your wiring)
+static inline uint8_t remap_rows(uint8_t v){ return v; }
 static inline int phys_col(int logical_col){ return logical_col & 7; }
 
 static inline void ROW_WRITE_MASK(uint8_t m){
@@ -128,11 +128,10 @@ void display7SEG(int num) {
 #define MAX_LED            4
 #define DIG_HOLD_TICKS 25
 
-static volatile uint16_t tick1s = 0;      // for PA5 blink
-static volatile uint16_t scanCnt = 0;     // for digit stepping
-static volatile uint8_t  index_led = 0;   // 0..3
+static volatile uint16_t tick1s = 0;
+static volatile uint16_t scanCnt = 0;
+static volatile uint8_t  index_led = 0;
 
-// Buffer for 4 digits; tweak for your unit tests
 static int8_t led_buffer[MAX_LED] = {1, 2, 3, 4};
 
 volatile int hour   = 20;
@@ -183,23 +182,20 @@ static inline void disable_all_digits(void){
   HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, GPIO_PIN_SET);
 }
 
-// Show led_buffer[index] on the corresponding digit.
-// If led_buffer[index] < 0, blank that digit.
+
 void update7SEG(int index){
   if (index < 0 || index >= MAX_LED) return;
 
   if (led_buffer[index] < 0) {
-    // blank this position
+
     extern void write_segments(uint8_t mask);
-    write_segments(0);     // all segments off (common-anode → all HIGH)
-    disable_all_digits();  // ensure no digit is enabled
+    write_segments(0);
+    disable_all_digits();
     return;
   }
 
-  // Drive segments for the digit
   display7SEG(led_buffer[index]);
 
-  // Enable only the target digit
   switch(index){
     case 0: enable_EN0(); break;
     case 1: enable_EN1(); break;
@@ -214,7 +210,6 @@ static inline void clamp_time_24h(void) {
   if (hour   >= 24) { hour   = 0; }
 }
 
-// Fills led_buffer as [H_tens, H_ones, M_tens, M_ones]
 void updateClockBuffer(void){
   int h = hour;
   int m = minute;
@@ -225,10 +220,10 @@ void updateClockBuffer(void){
   led_buffer[3] = (int8_t)(m % 10);
 }
 
-volatile int timer0_counter = 0, timer0_flag = 0;   // 1s tick for clock + DOT
-volatile int timer1_counter = 0, timer1_flag = 0;   // scan tick for 7-seg
+volatile int timer0_counter = 0, timer0_flag = 0;
+volatile int timer1_counter = 0, timer1_flag = 0;
 
-#define TIMER_CYCLE 10 // ms, matches TIM2 period
+#define TIMER_CYCLE 10
 
 static inline void setTimer0(int duration_ms){
   timer0_counter = duration_ms / TIMER_CYCLE;
@@ -239,14 +234,13 @@ static inline void setTimer1(int duration_ms){
   timer1_flag = 0;
 }
 
-volatile int timer2_counter = 0, timer2_flag = 0;   // matrix scan tick
+volatile int timer2_counter = 0, timer2_flag = 0;
 
 static inline void setTimer2(int duration_ms){
   timer2_counter = duration_ms / TIMER_CYCLE;
   timer2_flag = 0;
 }
 
-// Tick both timers every 10 ms (called from ISR)
 static inline void timer_run(void){
 	  if (timer0_counter > 0) if (--timer0_counter == 0) timer0_flag = 1;
 	  if (timer1_counter > 0) if (--timer1_counter == 0) timer1_flag = 1;
@@ -329,16 +323,6 @@ int main(void)
   MATRIX_DISABLE_ALL_COLS();
   ROW_WRITE_MASK(0x00);
 
-//  for(;;) {
-//    for (int col = 0; col < 8; col++) {
-//      // light exactly ONE pixel: row = something fixed, say row #0 bit
-//      MATRIX_DISABLE_ALL_COLS();
-//      ROW_WRITE_MASK(0x01);        // if nothing lights, try 0x80 (top) or invert ROW_ON/OFF defines
-//      MATRIX_ENABLE_COL(col);
-//      HAL_Delay(300);
-//    }
-//  }
-
   setTimer2(10);
   HAL_TIM_Base_Start_IT(&htim2);
   updateClockBuffer();
@@ -350,7 +334,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
     {
-      // 1) Once per second: advance time + blink DOT
       if (timer0_flag) {
         timer0_flag = 0;
         second++;
@@ -361,19 +344,18 @@ int main(void)
         setTimer0(1000);
       }
 
-      // 2) Scan next digit and draw it
       if (timer1_flag) {
         timer1_flag = 0;
-        index_led = (index_led + 1) & 0x03;  // 0..3
-        update7SEG(index_led);               // moved from ISR → main
-        setTimer1(250);                      // or 5/10 ms for smoother display
+        index_led = (index_led + 1) & 0x03;
+        update7SEG(index_led);
+        setTimer1(250);
       }
 
       if (timer2_flag){
         timer2_flag = 0;
         index_led_matrix = (index_led_matrix + 1) & 0x07;
         updateLEDMatrix(index_led_matrix);
-        setTimer2(10);   // tune this (lower = brighter/smoother)
+        setTimer2(10);
       }
     }
 
@@ -525,7 +507,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance == TIM2)
   {
-    // ISR does timing only in Ex8
     timer_run();
   }
 }
