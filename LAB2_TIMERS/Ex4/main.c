@@ -73,7 +73,6 @@ static inline void write_segments(uint8_t m) {
   HAL_GPIO_WritePin(SEG0_GPIO_Port, SEG0_Pin, (m & (1<<6)) ? SEG_ON : SEG_OFF); // g
 }
 
-// ===== display one digit =====
 void display7SEG(int num) {
   if (num < 0 || num > 9) num = 0;
   write_segments(segmap[num]);
@@ -82,11 +81,10 @@ void display7SEG(int num) {
 #define MAX_LED            4
 #define DIG_HOLD_TICKS 25
 
-static volatile uint16_t tick1s = 0;      // for PA5 blink
-static volatile uint16_t scanCnt = 0;     // for digit stepping
-static volatile uint8_t  index_led = 0;   // 0..3
+static volatile uint16_t tick1s = 0;
+static volatile uint16_t scanCnt = 0;
+static volatile uint8_t  index_led = 0;
 
-// Buffer for 4 digits; tweak for your unit tests
 static int8_t led_buffer[MAX_LED] = {1, 2, 3, 4};
 
 /* USER CODE END PV */
@@ -133,23 +131,19 @@ static inline void disable_all_digits(void){
   HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, GPIO_PIN_SET);
 }
 
-// Show led_buffer[index] on the corresponding digit.
-// If led_buffer[index] < 0, blank that digit.
 void update7SEG(int index){
   if (index < 0 || index >= MAX_LED) return;
 
   if (led_buffer[index] < 0) {
-    // blank this position
+
     extern void write_segments(uint8_t mask);
-    write_segments(0);     // all segments off (common-anode → all HIGH)
-    disable_all_digits();  // ensure no digit is enabled
+    write_segments(0);
+    disable_all_digits();
     return;
   }
 
-  // Drive segments for the digit
   display7SEG(led_buffer[index]);
 
-  // Enable only the target digit
   switch(index){
     case 0: enable_EN0(); break;
     case 1: enable_EN1(); break;
@@ -327,20 +321,18 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
   if (htim->Instance == TIM2){
-    // 1) 1-second blink (toggle) for PA5 and DOT
-    if (++tick1s >= 100){                 // 100 * 10 ms = 1000 ms
+
+    if (++tick1s >= 100){
       tick1s = 0;
-      HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin); // PA5
-      HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);         // PA4
+      HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+      HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
     }
 
-    // 2) Advance digit every 250 ms
-    if (++scanCnt >= DIG_HOLD_TICKS){     // DIG_HOLD_TICKS = 25
+    if (++scanCnt >= DIG_HOLD_TICKS){
       scanCnt = 0;
-      index_led = (index_led + 1) & 0x03; // 0..3
+      index_led = (index_led + 1) & 0x03;
     }
 
-    // 3) Drive current digit from buffer
     update7SEG(index_led);
   }
 }
