@@ -83,7 +83,7 @@ static volatile uint16_t cnt_500ms = 0;
 static volatile uint16_t cnt_1s    = 0;
 static volatile uint8_t  which_digit = 0;
 
-static int8_t led_buffer[4] = { -1, -1, 3, 0 };
+static int8_t led_buffer[4] = { 1, 2, 3, 0 };
 
 /* USER CODE END PV */
 
@@ -128,14 +128,11 @@ static inline void disable_all_digits(void){
   HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, GPIO_PIN_SET);
 }
 
-// Drive selected digit from led_buffer; blank if -1
 static inline void drive_digit(uint8_t idx){
   if (idx > 3) return;
   if (led_buffer[idx] < 0) {
-    // blank: turn all segments OFF and disable all digits for safety
-    // (optional: you can skip touching segments if you want)
-    extern void write_segments(uint8_t mask); // from your display7SEG.c
-    write_segments(0); // all segments OFF (common-anode: all HIGH)
+    extern void write_segments(uint8_t mask);
+    write_segments(0);
     disable_all_digits();
     return;
   }
@@ -321,15 +318,15 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
   if (htim->Instance == TIM2){
-    if (++cnt_1s >= 100){                 // 100 * 10ms = 1000ms
+    if (++cnt_1s >= 100){
       cnt_1s = 0;
-      HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);     // PA5
-      HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);             // PA4 colon/dots
+      HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+      HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
     }
 
-    if (++cnt_500ms >= 50){               // 50 * 10ms = 500ms
+    if (++cnt_500ms >= 50){
       cnt_500ms = 0;
-      which_digit = (which_digit + 1) & 0x03; // 0..3
+      which_digit = (which_digit + 1) & 0x03;
     }
 
     drive_digit(which_digit);
