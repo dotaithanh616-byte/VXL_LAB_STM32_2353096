@@ -1,0 +1,7 @@
+input_reading.c:27:29:read_hw	16	static
+input_reading.c:35:6:buttons_init	16	static
+input_reading.c:47:6:buttons_reading_10ms	16	static
+input_reading.c:83:9:button_is_pressed	16	static
+input_reading.c:87:9:button_is_long_pressed	16	static
+input_reading.c:91:9:button_pressed_edge	24	static
+input_reading.c:98:9:button_released_edge	24	static

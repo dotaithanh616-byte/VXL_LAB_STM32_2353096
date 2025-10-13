@@ -1,0 +1,5 @@
+soft_timers.h:12:24:now_ms	4	static
+soft_timers.h:19:20:timer_start_ms	16	static
+soft_timers.h:23:23:timer_expired	16	static
+app.c:8:6:app_init	8	static
+app.c:12:6:app_tick	8	static
