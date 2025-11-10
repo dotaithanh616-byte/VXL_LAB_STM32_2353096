@@ -1,0 +1,6 @@
+command_parser_fsm.c:34:12:rb_pop	16	static
+command_parser_fsm.c:44:6:uart_rx_init	8	static
+command_parser_fsm.c:51:6:HAL_UART_RxCpltCallback	24	static
+command_parser_fsm.c:67:9:cmd_take_RST	16	static
+command_parser_fsm.c:74:9:cmd_take_OK	16	static
+command_parser_fsm.c:82:6:command_parser_fsm	16	static

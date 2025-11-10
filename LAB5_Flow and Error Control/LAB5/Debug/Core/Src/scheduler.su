@@ -1,0 +1,15 @@
+scheduler.c:30:24:sch_irq_lock	16	static,ignoring_inline_asm
+scheduler.c:35:20:sch_irq_unlock	16	static,ignoring_inline_asm
+scheduler.c:42:13:clear_tables	16	static
+scheduler.c:56:13:q_insert	24	static
+scheduler.c:101:16:q_remove_by_id	24	static
+scheduler.c:131:20:due_push_from_isr	16	static
+scheduler.c:137:16:due_pop_locked	16	static
+scheduler.c:147:6:SCH_Init	8	static
+scheduler.c:153:6:SCH_Update	16	static
+scheduler.c:179:6:SCH_Dispatch_Tasks	24	static
+scheduler.c:224:10:SCH_Add_Task	32	static
+scheduler.c:255:9:SCH_Delete_Task	24	static
+scheduler.c:280:13:SCH_Go_To_Sleep	4	static
+scheduler.c:283:13:SCH_Report_Status	4	static
+scheduler.c:287:10:SCH_TimeMs	16	static

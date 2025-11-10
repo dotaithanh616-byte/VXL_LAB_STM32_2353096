@@ -1,0 +1,6 @@
+main.c:76:5:main	8	static
+main.c:135:6:SystemClock_Config	88	static
+main.c:174:6:HAL_TIM_PeriodElapsedCallback	16	static
+main.c:180:13:blinky_led_task	8	static
+main.c:184:13:adc_sample_task	16	static
+main.c:199:6:Error_Handler	4	static,ignoring_inline_asm
